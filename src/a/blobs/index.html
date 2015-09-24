@@ -1,0 +1,192 @@
+<!DOCTYPE html><meta charset="utf-8"><style>
+	html{white-space:pre;font-family:courier;margin:0;padding:0;margin-left:auto;margin-right:auto;padding:0 4em 0 4em;display:block;text-align:center;width:1024px;color:#222;border-right:0px dotted #666;border-left:0px dotted #666;box-shadow:0 0 27px rgba(0,0,0,1);border-radius:1px}
+	title{display:inline;font-weight:bold;font-size:.5em;padding:1em;padding-top:.5em;border:1px solid gray;background:yellow;box-shadow:0 0 .5em rgba(0,0,0,.5)}
+	a{text-decoration:none;color:blue}
+	#scr{width:60em;height:30em;outline:0;border:1px solid gray;box-shadow:0 0 .5em rgba(0,0,0,.5)}
+	#src{font-size:1em;line-height:1.3em;background:#eee;font-family:courier;padding-left:1em;width:20em;height:512em;border:1px dashed gray;display:block;margin-left:auto;margin-right:auto}
+	#recvsize{color:green}
+	#sts{color:brown}
+	#f1{color:#800}
+</style><title>clare</title>
+<output id="f2"></output>
+<img id=scr src="" alt="display" tabindex=0 onkeydown="keys[1]=event.keyCode;return false;" onkeyup="keys[1]=0;return false;">
+ <output id="recvsize"></output>  <output id="outp"></output> <output id=sts></output> <a href="javascript:compile()">crun</a> <output id="f1"></output><a href="javascript:stop()"> off</a><script>
+$=document.all;
+var keys=new Uint8Array([48,0]);
+var ison=false,frameno=0,last_scr_wi=0,pause=false;
+function start(){
+	if(ison)return;
+	console.log("start")
+	ison=true;
+	$.sts.value="on";
+	ws=new WebSocket("ws://"+location.host+"/pz.a.porta");
+	ws.binaryType="arraybuffer";
+	ws.onopen=function(e){
+		console.log("open");
+		p(" porta");
+		compile();
+//		ws.send(keys);
+	}
+	ws.onmessage=function(e){
+		onframe();
+		var ua=new DataView(e.data);
+		var cmd=ua.getUint8(0);
+//		console.log("message "+cmd);
+//		console.log("command "+cmd);
+		var dat=e.data.slice(1);
+		if(cmd==48){//refresh display
+			frameno++;
+			$.recvsize.value="frame: "+frameno+"  "+e.data.byteLength+" B  "+onframe.fps+" fps";
+			var b64=base64ArrayBuffer(dat);
+			$.f2.value='';
+			$.sts.value=keys[1];
+			ws.send(keys);
+			return;
+		}else if(cmd==49){//text to f1 compile status
+			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
+//			console.log('string f1 {'+str+'}')
+			if(str==''){//ok
+				pause=false;
+				frameno=0;
+				$.f1.value='';
+				return;
+			}else{//error
+				pause=true;
+				$.f1.value='\n'+str;
+				return;
+			}
+		}else if(cmd==50){//text to f2
+			pause=true;
+			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
+			$.f1.value=str;
+//			console.log(str);
+			return;
+		}
+	};
+	ws.onerror=function(e){
+		console.log("websocket error");
+	};
+	$.scr.focus();
+}
+function stop(){
+	console.log("close");
+	ison=false;
+	ws.close();
+	$.outp.value="";
+	$.sts.value="off";
+//	$.scr.focus();
+}
+function compile(){
+	console.log("compile");
+	start();
+	ws.send("1"+$.src.value);
+	$.scr.focus();
+}
+function p(txt){$.outp.value+=txt;}
+function onframe(){
+	var t=new Date().getTime();
+	var dt=t-onframe.t0;
+	if(dt>1000){
+		onframe.t0=t;
+		var df=frameno-onframe.f0;
+		onframe.f0=frameno;
+		onframe.fps=Math.floor(dt==0?0:df*1000/dt);
+	}
+}
+onframe.t0=0;
+onframe.f0=0;
+onframe.fps=0;
+
+onload=start;
+</script>
+
+<script>
+//from
+//  http://stackoverflow.com/questions/11089732/display-image-from-blob-using-javascript-and-websockets
+//public method for encoding an Uint8Array to base64
+function encode_base64 (input) {
+    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    var output = "";
+    var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+    var i = 0;
+
+    while (i < input.length) {
+        chr1 = input[i++];
+        chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
+        chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
+
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+
+        if (isNaN(chr2)) {
+            enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+            enc4 = 64;
+        }
+        output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+                  keyStr.charAt(enc3) + keyStr.charAt(enc4);
+    }
+    return output;
+}
+
+
+// from https://gist.github.com/jonleighton/958841
+// Converts an ArrayBuffer directly to base64, without any intermediate 'convert to string then
+// use window.btoa' step. According to my tests, this appears to be a faster approach:
+// http://jsperf.com/encoding-xhr-image-data/5
+
+function base64ArrayBuffer(arrayBuffer) {
+  var base64    = ''
+  var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+
+  var bytes         = new Uint8Array(arrayBuffer)
+  var byteLength    = bytes.byteLength
+  var byteRemainder = byteLength % 3
+  var mainLength    = byteLength - byteRemainder
+
+  var a, b, c, d
+  var chunk
+
+  // Main loop deals with bytes in chunks of 3
+  for (var i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+    c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+    d = chunk & 63               // 63       = 2^6 - 1
+
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+  }
+
+  // Deal with the remaining bytes and padding
+  if (byteRemainder == 1) {
+    chunk = bytes[mainLength]
+
+    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+
+    base64 += encodings[a] + encodings[b] + '=='
+  } else if (byteRemainder == 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+
+    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+
+    base64 += encodings[a] + encodings[b] + encodings[c] + '='
+  }
+  
+  return base64
+}
+</script>
+..
