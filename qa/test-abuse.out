@@ -1,0 +1,6 @@
+test-abuse.sh
+Wed Jul 2 09:27:58 ICT 2014
+txxx: ddos, request, method, size
+txxx: ddos, request, uri, size
+0a1
+> java.io.IOException: Broken pipe

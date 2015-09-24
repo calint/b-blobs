@@ -1,0 +1,25 @@
+-bash
+
+Sun Jul 6 10:31:57 ICT 2014
+localhost:8888
+aaaa-110307-064915.110-cb48e04f
+/Users/calin/Documents/workspace/a/bin
+
+t000: file transfer from cache
+t001: file transfer bigger
+t002: file transfer byterange from 1
+t010: page empty
+t013: page large
+t014: page input utf8
+t015: page post utf8
+t016: page post utf8 read
+t021: resource from stream
+t022: big chunks reply
+t023: cached uri
+t024: uploads
+. . . . . . . file
+. . . . . . . very small file
+t026: encoders osltgt,osnl
+t027: encoder osjsstr
+Sun Jul 6 10:31:58 ICT 2014
+done
