@@ -663,8 +663,8 @@ public final class req{
 			cn=b.webobjpkg+cn;
 			Class<? extends a>ecls;
 			try{ecls=(Class<? extends a>)Class.forName(cn);}catch(Throwable e1){try{
-//				final String clsnm=cn+(cn.length()==0?"":".")+b.default_package_class;
-				final String clsnm=cn+b.default_package_class;
+				final String clsnm=cn+(cn.length()==0?"$.":".")+b.default_package_class;
+//				final String clsnm=cn+b.default_package_class;
 				ecls=(Class<? extends a>)Class.forName(clsnm);
 			}catch(Throwable e2){
 				while(e1.getCause()!=null)e1=e1.getCause();
