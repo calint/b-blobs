@@ -6,7 +6,7 @@
 	#src{font-size:1em;line-height:1.3em;background:#eee;font-family:courier;padding-left:1em;width:20em;height:512em;border:1px dashed gray;display:block;margin-left:auto;margin-right:auto}
 	#recvsize{color:green}
 	#sts{color:brown}
-	#f1{color:#800}
+	#f1{color:#800;border:1px solid yellow}
 </style><title>clare</title>
 <output id="f2"></output>
 <img id=scr src="" alt="display" tabindex=0 onkeydown="keys[1]=event.keyCode;return false;" onkeyup="keys[1]=0;return false;">
@@ -19,13 +19,13 @@ function start(){
 	console.log("start")
 	ison=true;
 	$.sts.value="on";
-	ws=new WebSocket("ws://"+location.host+"/pz.a.porta");
+	ws=new WebSocket("ws://"+location.host+"/blobs.porta");
 	ws.binaryType="arraybuffer";
 	ws.onopen=function(e){
 		console.log("open");
 		p(" porta");
 		compile();
-//		ws.send(keys);
+		ws.send(keys);
 	}
 	ws.onmessage=function(e){
 		onframe();
@@ -44,17 +44,8 @@ function start(){
 			return;
 		}else if(cmd==49){//text to f1 compile status
 			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
-//			console.log('string f1 {'+str+'}')
-			if(str==''){//ok
-				pause=false;
-				frameno=0;
-				$.f1.value='';
-				return;
-			}else{//error
-				pause=true;
-				$.f1.value='\n'+str;
-				return;
-			}
+			console.log(str);
+			$.outp.value=str;
 		}else if(cmd==50){//text to f2
 			pause=true;
 			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
@@ -79,7 +70,7 @@ function stop(){
 function compile(){
 	console.log("compile");
 	start();
-	ws.send("1"+$.src.value);
+	ws.send("1hello");
 	$.scr.focus();
 }
 function p(txt){$.outp.value+=txt;}
@@ -99,118 +90,6 @@ onframe.fps=0;
 
 onload=start;
 </script>
-<textarea id=src spellcheck=false>
-{
-@inline rects.drw()
-@inline rects.upd()
-@inline text.drw()
-eof eof eof
-def text.drw(){
-  foo(texts){
-    var n
-    ldc(n text)
-    lp(n){
-      var bmp
-      ldc(bmp text)
-      @inline print_bmp_4x4(dest_addr width height add_after_line bmp rgb)
-      sub(dest_addr add_after_glyph)
-    }
-  }
-}
-def print_bmp_4x4(scr wi hi ln bmp rgb){
-  lp(hi){
-    lp(wi){
-      shf(bmp -1)
-      @ifn stc(scr rgb)
-      @ifz inc(scr)
-      @ifp inc(scr)
-    }
-    add(scr ln)
-  }
-}
-def texts
-[ dest_addr    width   height   add_after_line   text   rgb   add_after_glyph ]{2
-   0x3040       4        4         252           txt   0xf00       0x3fc   
-   0x3440       4        4         252           os    0xf00       0x3fc   
-} 
-eof
-def txt[u16]{6
-  0xffff 0x0175 0x0767 0x0043 0x0043 0x0252 0x0126
-  0xffff
-}
-eof
-def os[bmp4x4]{1
-   0xffff
-}
-eof
-def pl(dest_addr width height add_after_line text rgb add_after_glyph){
-  var n
-  ldc(n text)
-  var bmp
-  lp(n){
-    ldc(bmp text)
-    @inline print_bmp_4x4(dest_addr width height add_after_line bmp rgb)
-    sub(dest_addr j)
-  }
-}
-
-def rects
-[   yx    rgb   wi    hi   ln     ]{ 3
-  0x1400 0x0ff 256    80  0x24
-  0x1000 0xf00 0x30  0x40 0x24
-  0x5800 0x00f 0x30   50  0x23
-}
-eof
-def rects.upd(){
-  var m
-  li(m 0x40)
-  fow(rects){
-    inc(ln)
-    var i
-    tx(i ln)
-    sub(i m)
-    @ifp li(ln 0x10)
-  }
-}
-def rects.drw(){
-  foo(rects){
-    lp(hi){
-      lp(wi){
-        stc(yx rgb)
-      }
-      add(yx ln)
-    }
-  }
-}
-def dots
-[   yx    dyx    rgb ]{4
-  0x7840 0x0001 0x800
-  0x7951 0x0002 0x080
-  0x7a62 0x0003 0x008
-  0x7b73 0x0004 0x088
-}
-def dots.drw(){
-  foo(dots){
-    st(yx rgb)
-  }
-}
-def dots.upd(){
-  var g
-  li(g 0x7f00)
-  fow(dots){
-    add(yx dyx)
-    var h
-    tx(h yx)
-    sub(h g)
-    @ifp li(yx 0x0800)
-  }
-}
-def red 0xf00
-def green 0xf0
-def blue 0xf
-def eof 0xffff
-}
-</textarea> 
 
 <script>
 //from
@@ -301,104 +180,3 @@ function base64ArrayBuffer(arrayBuffer) {
   return base64
 }
 </script>
-
-
-
-
-
-#define scr 1000
-#define nlines 10
-#define colr 800
-li a scr
-li c nlines
-li d colr
-call draw
-..
-typedef int
-int r f00
-int g 0f0
-int b 00f
-li c 10
-li a 400
-#define nlines 10
-..
-draw:
-  lp c
-    stc a d nxt ret
-
-
-
-
-
-
-
-{
-@inline rects.upd()
-@inline rects.drw()
-@inline dots.drw()
-@inline dots.upd()
-eof eof
-def dots
-[    yx    rgb ]{4
-  0x7840 0x800
-  0x7951 0x080
-  0x7a62 0x008
-  0x7b73 0x000
-}
-def rects
-[   yyxx  rgb   wi    hi   ln ]{ 3
-  0x1400 0x0ff 256    80  0x24
-  0x1000 0xf00 0x30  0x40 0x24
-  0x5800 0x00f 0x30   50  0x23
-}
-eof eof eof
-def rects.upd(){
-  li(m 0x40)
-  fow(rects d e f g h){
-    inc(h)
-    @debug tx(p h)
-    tx(i h)
-    sub(i m)
-    @ifp li(h 0x10)
-  }
-}
-def rects.drw(){
-  foo(rects d e f g h){
-    lp(g){
-      lp(f){
-        stc(d e)
-      }
-      add(d h)
-    }
-  }
-}
-def dots.drw(){
-  foo(dots d e){
-    st(d e)
-  }
-}
-def dots.upd(){
-  li(f 0x7f00)
-  fow(dots d e){
-    inc(d)
-    tx(g d)
-    sub(g f)
-    @ifp li(d 0x0800)
-  }
-}
-eof
-def dot(a b){st(a b)}
-def line(a b c){
-  lp(c){
-    stc(a b)
-    inc(b)
-  }
-}
-eof
-
-def red 0xf00
-def green 0xf0
-def blue 0xf
-def eof 0xffff
-}
-..

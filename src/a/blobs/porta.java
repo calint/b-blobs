@@ -1,21 +1,10 @@
 package a.blobs;
-import static b.b.K;
-import static b.b.pl;
 import static b.b.stacktraceline;
 import static b.b.strenc;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringReader;
+
 import java.nio.ByteBuffer;
 import java.util.Date;
 
-import javax.imageio.ImageIO;
-import a.pz.core;
-import a.pz.foo.block;
-import a.pz.foo.reader;
-import a.pz.foo.xbin;
 import b.threadedsock;
 import b.websock;
 final public class porta extends websock implements threadedsock{
@@ -37,6 +26,8 @@ final public class porta extends websock implements threadedsock{
 			frameno++;
 //			co.ram[0x7fff]=key;
 			//		final long t0=System.nanoTime();
+			send_binary("1","frame #"+frameno+" "+new Date());
+			send_binary("0","map"+new Date());
 			break;
 		case '1'://compile
 			final String src=tostr(bb);

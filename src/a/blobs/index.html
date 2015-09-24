@@ -6,7 +6,7 @@
 	#src{font-size:1em;line-height:1.3em;background:#eee;font-family:courier;padding-left:1em;width:20em;height:512em;border:1px dashed gray;display:block;margin-left:auto;margin-right:auto}
 	#recvsize{color:green}
 	#sts{color:brown}
-	#f1{color:#800}
+	#f1{color:#800;border:1px solid yellow}
 </style><title>clare</title>
 <output id="f2"></output>
 <img id=scr src="" alt="display" tabindex=0 onkeydown="keys[1]=event.keyCode;return false;" onkeyup="keys[1]=0;return false;">
@@ -19,13 +19,13 @@ function start(){
 	console.log("start")
 	ison=true;
 	$.sts.value="on";
-	ws=new WebSocket("ws://"+location.host+"/pz.a.porta");
+	ws=new WebSocket("ws://"+location.host+"/blobs.porta");
 	ws.binaryType="arraybuffer";
 	ws.onopen=function(e){
 		console.log("open");
 		p(" porta");
 		compile();
-//		ws.send(keys);
+		ws.send(keys);
 	}
 	ws.onmessage=function(e){
 		onframe();
@@ -44,17 +44,8 @@ function start(){
 			return;
 		}else if(cmd==49){//text to f1 compile status
 			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
-//			console.log('string f1 {'+str+'}')
-			if(str==''){//ok
-				pause=false;
-				frameno=0;
-				$.f1.value='';
-				return;
-			}else{//error
-				pause=true;
-				$.f1.value='\n'+str;
-				return;
-			}
+			console.log(str);
+			$.outp.value=str;
 		}else if(cmd==50){//text to f2
 			pause=true;
 			var str=String.fromCharCode.apply(null,new Uint8Array(dat));
@@ -79,7 +70,7 @@ function stop(){
 function compile(){
 	console.log("compile");
 	start();
-	ws.send("1"+$.src.value);
+	ws.send("1hello");
 	$.scr.focus();
 }
 function p(txt){$.outp.value+=txt;}
@@ -189,4 +180,3 @@ function base64ArrayBuffer(arrayBuffer) {
   return base64
 }
 </script>
-..
