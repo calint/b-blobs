@@ -8,7 +8,7 @@ final public class window extends objm{
 	final static int CLP_TOP=1,CLP_BTM=2,CLP_RHT=4,CLP_LFT=8,CLP_Z=16;
 	final static int CULLED=-1,NOCLP=0,CLP=1;
 	static final long serialVersionUID=1;
-	private Color cl_spc;
+	private color cl_spc;
 	int clp_btm;
 	int clp_lft;
 	private int clp_mgn=32;
@@ -76,12 +76,12 @@ final public class window extends objm{
 		}
 //		cl_sky=new Color(50,50,200);
 //		cl_gnd=new Color(50,150,50);
-		cl_spc=new Color(0x020408);
+		cl_spc=new color(0x02,0x04,0x08);
 //		cl_dts=new Color(0x80,0xb0,0xb0);
 		ra=ra0.negate();
 	}
-	public final Color cl_spc(){return cl_spc;}
-	public final window cl_spc(int r,int g,int b){cl_spc=new Color(r,g,b);return this;}
+	public final color cl_spc(){return cl_spc;}
+	public final window cl_spc(int r,int g,int b){cl_spc=new color(r,g,b);return this;}
 	private final int clip_check(final obj o,final p3 v,final p3 nml,final double r,final double clpmgn){
 		final double s=nml.dotprod(v);
 		if(s<0){
@@ -169,7 +169,7 @@ final public class window extends objm{
 		return allclp;
 	}
 	public final void light(final p3 l){lht=l;}
-	final void paint(final Graphics g){
+	final void paint(final gfx g){
 		long t1=System.currentTimeMillis();
 		if(cfg.rend_spc){
 			g.setColor(cl_spc);
@@ -183,7 +183,7 @@ final public class window extends objm{
 		metrics.cam_gnd_ms=(int)(t3-t2);
 		metrics.cam_obj_ms=(int)(t4-t3);
 	}
-	private final void paint_obj(final Graphics g){
+	private final void paint_obj(final gfx g){
 		final long t1=System.currentTimeMillis();
 		final List<obj>ols=new LinkedList<obj>();
 		ols.addAll(wld.objects_all());

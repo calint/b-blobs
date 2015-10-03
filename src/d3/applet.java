@@ -35,7 +35,7 @@ public final class applet implements Runnable{private static final long serialVe
 	private void frame_do()throws Error{
 		final long t0=System.currentTimeMillis();
 		metrics_clear();
-		final Graphics g=getGraphics();
+		final gfx g=getGraphics();
 		if(g==null)return;
 		dim=getSize();
 		if(dim==null||dim.width==0||dim.height==0)return;

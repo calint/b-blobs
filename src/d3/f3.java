@@ -58,11 +58,11 @@ public final class f3 implements Serializable,Cloneable{
 	public pa3 pts(){
 		return pts;
 	}
-	public void render_clp(Graphics g,window wn,pa3 pv,pa2z ps,double[] itns){
+	public void render_clp(gfx g,window wn,pa3 pv,pa2z ps,double[] itns){
 		for(int n=0;n<polys.length;n++)
 			polys[n].render_clp(g,wn,pv,ps,itns[n]);
 	}
-	public void render_noclp(Graphics g,pa2 ps,double[] itns){
+	public void render_noclp(gfx g,pa2 ps,double[] itns){
 		for(int n=0;n<polys.length;n++)
 			polys[n].render_noclp(g,ps,itns[n]);
 	}

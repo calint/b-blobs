@@ -3,23 +3,26 @@ import java.io.IOException;
 import java.io.Serializable;
 final class color implements Serializable,Cloneable{
 	private static final long serialVersionUID=1L;
-	private Color awtcolor;
+	//private Color awtcolor;
 	private int r,g,b;
+	public final static color black=new color(0,0,0);
+	public final static color white=new color(255,255,255);
+	
 	public color(xis xis) throws IOException{
 		r=xis.int_read();
 		g=xis.int_read();
 		b=xis.int_read();
-		awtcolor=new Color(r,g,b);
+		//awtcolor=new Color(r,g,b);
 	}
 	public color(int r0,int g0,int b0){
 		r=r0;
 		g=g0;
 		b=b0;
-		awtcolor=new Color(r,g,b);
+//		awtcolor=new Color(r,g,b);
 	}
-	public Color awtcolor(){
-		return awtcolor;
-	}
+//	public Color awtcolor(){
+//		return awtcolor;
+//	}
 	public color clone(){
 		return new color(r,g,b);
 	}
@@ -38,7 +41,7 @@ final class color implements Serializable,Cloneable{
 			bb=255;
 		else if(bb<0)
 			bb=0;
-		awtcolor=new Color(rr,gg,bb);
+//		awtcolor=new Color(rr,gg,bb);
 	}
 	public String toString(){
 		return new String("color="+r+"  "+g+"  "+b);

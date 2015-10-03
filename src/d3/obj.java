@@ -187,7 +187,7 @@ public abstract class obj implements Serializable{
 	public final double radius2(){
 		return bradius*bradius;
 	}
-	private void rend_bsph(Graphics g,window c){//?
+	private void rend_bsph(gfx g,window c){//?
 	//		p3 p=pos();
 	//		p3 ps1=c.wcs_to_scs(p);
 	//		g.setColor(Color.gray);
@@ -195,7 +195,7 @@ public abstract class obj implements Serializable{
 	//		p3 ps2=c.wcs_to_scs(radius);
 	//		g.drawOval((int)(ps1.x-ps2.x),(int)(ps1.y-ps2.y),(int)(ps2.x*2),(int)(ps2.y*2));
 	}
-	public void rend_clp(final Graphics g,final window w,final p3 lht,final int clp){
+	public void rend_clp(final gfx g,final window w,final p3 lht,final int clp){
 		if(f3==null)
 			return;
 		upd_pw();
@@ -217,7 +217,7 @@ public abstract class obj implements Serializable{
 		// if(fx.obj_rend_bsphere)
 		// render_bsphere(g,c);
 	}
-	public void rend_noclp(final Graphics g,final window w,final p3 lht){
+	public void rend_noclp(final gfx g,final window w,final p3 lht){
 		if(f3==null)
 			return;
 		upd_pw();

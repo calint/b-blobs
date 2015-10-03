@@ -2,8 +2,8 @@ package d3;
 import java.io.IOException;
 import java.io.Serializable;
 final class poly implements Serializable,Cloneable{
-	private static final int npi=16;
-	private static final Polygon awtpoly=new Polygon(new int[npi],new int[npi],npi);
+//	private static final int npi=16;
+//	private static final Polygon awtpoly=new Polygon(new int[npi],new int[npi],npi);
 	private static final long serialVersionUID=1L;
 	final static int awt_poly_detm(){
 		int p1x=awtpoly.xpoints[1],p1y=awtpoly.ypoints[1];
@@ -13,16 +13,16 @@ final class poly implements Serializable,Cloneable{
 		int v2y=awtpoly.ypoints[0]-p1y;
 		return v1x*v2y-v2x*v1y;
 	}
-	final static void awt_poly_fill(final poly p,final Graphics g){
+	final static void awt_poly_fill(final poly p,final gfx g){
 		metrics.rend_npoly++;
 		if(cfg.rend_pgon_cull)
 			if(awt_poly_detm()>0)
 				return;
 		if(cfg.rend_wire){
 			if(cfg.rend_wire_pen)
-				g.setColor(Color.black);
+				g.setColor(color.black);
 			else
-				g.setColor(Color.white);
+				g.setColor(color.white);
 			g.drawPolygon(awtpoly);
 		}
 		if(!cfg.rend_solid)
@@ -171,7 +171,7 @@ final class poly implements Serializable,Cloneable{
 		if(adv)
 			psc.n++;
 	}
-	private void paint_noclp(final Graphics g,final pa2 ps){
+	private void paint_noclp(final gfx g,final pa2 ps){
 		for(int n=0;n<pi.length;n++){
 			int i=pi[n];
 			awtpoly.xpoints[n]=ps.x[i];
@@ -180,7 +180,7 @@ final class poly implements Serializable,Cloneable{
 		awtpoly.npoints=pi.length;
 		awt_poly_fill(this,g);
 	}
-	public void render_clp(final Graphics g,final window wn,final pa3 pv,final pa2z ps,final double itn){
+	public void render_clp(final gfx g,final window wn,final pa3 pv,final pa2z ps,final double itn){
 		cl.intensity(itn);
 		if(ps.clp_allor==0){
 			metrics.rend_poly_clpno++;
@@ -215,7 +215,7 @@ final class poly implements Serializable,Cloneable{
 		System.arraycopy(psc[to].y,0,awtpoly.ypoints,0,awtpoly.npoints);
 		awt_poly_fill(this,g);
 	}
-	public void render_noclp(final Graphics g,final pa2 ps,final double itn){
+	public void render_noclp(final gfx g,final pa2 ps,final double itn){
 		cl.intensity(itn);
 		paint_noclp(g,ps);
 	}
