@@ -45,7 +45,7 @@ public final class xwriter{
 	public xwriter ax(final a e,final String func,final String param,final String html,final String accesskey){
 		final String wid=e.id();
 		p("<a");
-		if(accesskey!=null)spc().p("accesskey=").p(accesskey);
+		if(accesskey!=null)spc().p("accesskey=").p(accesskey).attr("title",accesskey);
 		p(" href=\"javascript:").axjs(wid,func,param).p("\">").p(html).p("</a>");
 		return this;
 	}
@@ -55,7 +55,7 @@ public final class xwriter{
 		if(!isempty(param))p(" ").p(param);
 		return p("')");
 	}
-	public xwriter ajx(final a e,final String args){return tago("a").attr("href","javascript:$x('"+e.id()+" "+args+"')").tagoe();}
+	public xwriter ajx(final a e,final String args){return tago("a").attr("href","javascript:$x('"+e.id()+" "+args+"')").attr("id",e.id()).tagoe();}
 	public xwriter ajx(final a e){return tago("a").attr("href","javascript:$x('"+e.id()+"')").tagoe();}
 	public xwriter ajx_(){return tage("a");}
 	public xwriter br(){return tag("br");}
@@ -234,7 +234,7 @@ public final class xwriter{
 		final String eid=ax.id();
 		attr("onfocus","this.setSelectionRange(this.value.length,this.value.length)");
 		attr("oninput","$b(this);$x('"+eid+" "+onchangeaxp+"');return true;");
-		attr("onkeypress","if(!event)event=window.event;if(event.keyCode!=13)return true;$x('"+eid+" "+onselectaxp+"');return false;");
+		if(onselectaxp!=null)attr("onkeypress","if(!event)event=window.event;if(event.keyCode!=13)return true;$x('"+eid+" "+onselectaxp+"');return false;");
 		return tagoe();
 	}
 	public xwriter inputax(final a e){return inpax(e,null,e.pt(),null);}

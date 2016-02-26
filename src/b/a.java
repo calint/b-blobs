@@ -48,8 +48,8 @@ public class a implements Serializable{
 	public final String id(){
 		String s=nm;
 		for(a p=this;p.pt!=null;p=p.pt)
-			s=tostr(p.pt.nm,"")+field_path_separator+s;
-		return tostr(s,field_path_separator);
+			s=tostr(p.pt.nm,"")+req.field_path_separator+s;
+		return tostr(s,req.field_path_separator);
 	}
 	public final String nm(){return nm;}
 //	public final a nm(final String nm){this.nm=nm;return this;}
@@ -74,14 +74,16 @@ public class a implements Serializable{
 	public final a set(final int i){s=Integer.toString(i);return this;}
 	public final a set(final float f){s=Float.toString(f);return this;}
 	public final a set(final long i){s=Long.toString(i);return this;}
+	public final a set(final double d){s=Double.toString(d);return this;}
 	public final a clr(){return set((String)null);}
 	public final boolean isempty(){return s==null||s.length()==0;}
-	public final String toString(){return s==null?"":s;}
+	public String toString(){return s==null?"":s;}
 	public final String str(){return s==null?"":s;}
 	public final int toint(){return isempty()?0:Integer.parseInt(toString());}
 	public final float toflt(){return isempty()?0:Float.parseFloat(toString());}
 	public final long tolong(){return isempty()?0:Long.parseLong(toString());}	
 	public final short toshort(){return isempty()?0:Short.parseShort(toString());}
+	public final double todbl(){return isempty()?0:Double.parseDouble(toString());}
 	
 	
 	
@@ -111,8 +113,6 @@ public class a implements Serializable{
 	public a pt(final a e){pt=e;return this;}//? if pt ondetach?
 	public a nm(final String s){nm=s;return this;}
 	final public void xrfsh(final xwriter x)throws Throwable{to(x.xub(this,true,false));x.xube();} 
-	final public static String field_path_separator="-";
-	
 	/**implement to provide custom html document title*/
 //	public interface titled{void title_to(xwriter x);}
 	final public Reader reader(){return new StringReader(s==null?"":s);}
