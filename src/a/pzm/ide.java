@@ -21,7 +21,7 @@ import a.pzm.lang.call_tx;
 import a.pzm.lang.statement;
 import b.a;
 import b.xwriter;
-final public class ide extends a{
+public class ide extends a{
 	public final static int bit_show_logo=1;
 	public final static int bit_show_schematics=2;
 	public final static int bit_show_pramble=4;
@@ -48,7 +48,7 @@ final public class ide extends a{
 	/**builtinajaxstatus*/public a ajaxsts;
 	//	public metrics me;
 	public ide() throws Throwable{
-		ec.src.from(getClass().getResourceAsStream("rom"));
+		ec.src.from(ide.class.getResourceAsStream("rom"));
 		ajaxsts.set("idle");
 		bi.set(0b1111110000);
 		ro.ints=cor.rom;

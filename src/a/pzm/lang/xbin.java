@@ -2,6 +2,7 @@ package a.pzm.lang;
 
 import static b.b.pl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -9,9 +10,9 @@ import java.util.Map;
 
 import b.xwriter;
 
-public final class xbin{
-	final public static class varspace{
-		final public static class allocated_var{
+public final class xbin implements Serializable{
+	final public static class varspace implements Serializable{
+		final public static class allocated_var implements Serializable{
 			public statement declared_at;
 			public String bound_to_register;
 			public int register_index;
