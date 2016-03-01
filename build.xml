@@ -1,0 +1,9 @@
+<project default="compile">
+	<target name="compile">
+		<mkdir dir="bin"/>
+		<javac includeantruntime="false" srcdir="src" destdir="bin" />
+		<copy todir="bin">
+			<fileset dir="src" excludes="**/*.java" />
+		</copy>
+    </target>
+</project>
